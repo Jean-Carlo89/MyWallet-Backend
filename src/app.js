@@ -190,6 +190,7 @@ app.post("/entry" ,async(req,res)=>{
     const token =req.headers['authorization'].replace('Bearer ','')
     const today = dayjs().format("YYYY/MM/DD")
     console.log(token)
+   
     
     try{
         const result = await connection.query(`
