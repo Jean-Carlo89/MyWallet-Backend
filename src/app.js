@@ -1,4 +1,4 @@
-import express from 'express'
+import express, { query } from 'express'
 import cors from 'cors'
 import dayjs from 'dayjs'
 import pg from 'pg'
@@ -91,10 +91,10 @@ app.post("/sign-in" , async(req,res)=>{
             //console.log('verificado')
             const token = uuid();
 
-            // await connection.query(`
-            // INSERT INTO sessions ("userId",token) 
-            // VALUES ($1,$2)
-            // `,[user.id,token])
+            await connection.query(`
+            INSERT INTO sessions ("userId",token) 
+            VALUES ($1,$2)
+            `,[user.id,token])
 
 
             const userData = {
@@ -116,40 +116,106 @@ app.post("/sign-in" , async(req,res)=>{
 
 
 app.get("/home", async(req,res)=>{
-    const today = dayjs().format("YYYY/MM/DD")
-   //console.log(dayjs().format("YYYY-MM-DD"))
+    //const today = dayjs().format("YYYY/MM/DD")
+   console.log(dayjs().format("YYYY-MM-DD"))
+
+
+   console.log(req.headers['authorization'])
+
+   const token = req.headers["authorization"].replace("Bearer ",'')
+   console.log(token)
+
+   try{
+        const result = await connection.query(`
+        SELECT "userId" FROM sessions WHERE token = $1
+        `,[token])
+
+        const userId = result.rows[0].userId
+       // console.log(userId)
+
+       const searchTransactions = await connection.query(`
+       SELECT value,description,type,date
+       FROM transactions
+       WHERE "userId" = $1
+       `,[userId])
+
+       //console.log(searchTransactions.rows)
+       res.status(200).send(searchTransactions.rows)
+
+
+   }catch(e){
+       console.log('Erro ao obter transações')
+       console.log(e)
+   }
+
+
    
-    const obj =[
-        {
-        date:today,
-        description:'Katon',
-        price:3900,
-        type:'deposit'
-    },
+  // return
+//     const obj =[
+//         {
+//         date:today,
+//         description:'Katon',
+//         value:3900,
+//         type:'deposit'
+//     },
 
-    {
-        date:today,
-        description:'Suiton',
-        price:1700,
-        type:'withdraw'
-    },
+//     {
+//         date:today,
+//         description:'Suiton',
+//         value:1700,
+//         type:'withdraw'
+//     },
 
-    {
-        date:today,
-        description:'Suiton',
-        price:1459,
-        type:'withdraw'
-    }
+//     {
+//         date:today,
+//         description:'Suiton',
+//         value:1459,
+//         type:'withdraw'
+//     }
 
-]
+// ]
 
-    res.send(obj)
+//     res.send(obj)
 })
 
 app.post("/entry" ,async(req,res)=>{
     console.log(req.body)
-    //console.log('minha primeira requsição fullstack')
-    res.send('Chegou aqui!')
+    console.log(req.headers['authorization'])
+    const{value,description,transactionType} = req.body
+
+    console.log(value)
+    const newValue=parseInt(value*100)
+    console.log(newValue)
+
+    const token =req.headers['authorization'].replace('Bearer ','')
+    const today = dayjs().format("YYYY/MM/DD")
+    console.log(token)
+    
+    try{
+        const result = await connection.query(`
+        SELECT * FROM sessions
+        WHERE token = $1
+        `,[token])
+
+        const userId = result.rows[0].userId
+
+        
+        await connection.query(`
+        INSERT INTO transactions 
+        (value,description,type,date,"userId")
+        VALUES 
+        ($1,$2,$3,$4,$5)
+        `,[newValue,description,transactionType,today,userId])
+        
+        //console.log('minha primeira requsição fullstack')
+        res.sendStatus(200)
+    }catch(e){
+        console.log('erro ao salvar operação')
+        console.log(e)
+        res.sendStatus(400)
+        
+    }
+    
 })
 
 app.listen(4000, ()=>{
