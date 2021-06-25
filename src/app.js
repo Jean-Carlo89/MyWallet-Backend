@@ -14,14 +14,6 @@ app.use(express.json())
 
 
 
-app.get("/teste" , async (req,res)=>{
-
-   const result =  await connection.query(`
-    SELECT * FROM users
-    `)
-   res.send(result)
-})
-
 
 
 //Sign-up
@@ -139,6 +131,7 @@ app.get("/home", async(req,res)=>{
    }catch(e){
        console.log('Erro ao obter transações')
        console.log(e)
+       res.sendStatus(400)
    }
 
 
@@ -201,9 +194,6 @@ app.post("/logout" , async(req,res)=>{
 })
 
 
-app.get("/banana",(req,res)=>{
-    res.sendStatus(200)
-})
 
 
 
