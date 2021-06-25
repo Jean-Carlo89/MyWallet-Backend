@@ -41,6 +41,13 @@ describe("POST /sign-up", () => {
 
 
 
-afterAll(()=>{
-    connection.end()
+afterAll( async ()=>{
+
+    try{
+        await connection.query(`DELETE FROM users WHERE name = 'GugaBestMentor'`)
+        connection.end()
+    }catch(e){
+        
+    }
+    
 })
