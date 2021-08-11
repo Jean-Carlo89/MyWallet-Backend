@@ -9,6 +9,10 @@ const connection = new Pool({
     port: Number(process.env.DB_PORT),
     database: process.env.DB_DATABASE,
 
+    ssl: {
+        rejectUnauthorized: false
+    }
+
 })
 
 export default connection
