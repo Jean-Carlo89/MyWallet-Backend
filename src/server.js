@@ -1,7 +1,9 @@
+import './setup.js';
 import app from './app.js'
 
 
-app.listen(4000, ()=>{
+const port = Number(process.env.PORT);
 
-    console.log('server dodando na 4000')
-})
+app.listen(port, () => {
+  console.log(`Server is listening on port ${port}.`);
+});
