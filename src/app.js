@@ -13,7 +13,9 @@ app.use(cors())
 app.use(express.json())
 
 
-
+app.get("/",(req,res)=>{
+    return res.send("Server on")
+})
 
 
 //Sign-up
@@ -24,6 +26,8 @@ app.post("/sign-up" ,async(req,res)=>{
     
 
     const passwordHash = bcrypt.hashSync(password,12)
+
+    console.log(name,email,password,passwordHash);
     
    
     
@@ -48,7 +52,7 @@ app.post("/sign-up" ,async(req,res)=>{
         res.sendStatus(200)
     }catch(e){
         console.log('Erro ao salvar o novo usuario')
-        console.log(e)
+        console.error(e)
         res.sendStatus(400)
     }
 

@@ -7,7 +7,7 @@
   "scripts": {
     "test": "npx jest -i",
     "start": "node ./src/server.js",
-    "dev": "npx nodemon ./src/server.js"
+    "dev": "NODE_ENV=test npx nodemon ./src/server.js"
   },
   "keywords": [],
   "author": "",

@@ -9,7 +9,7 @@ const connection = new Pool({
     port: Number(process.env.DB_PORT),
     database: process.env.DB_DATABASE,
 
-    ssl: {
+    ssl: process.env.NODE_ENV = 'test' ? null : {
         rejectUnauthorized: false
     }
 

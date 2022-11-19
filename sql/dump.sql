@@ -5,6 +5,8 @@
 -- Dumped from database version 12.7 (Ubuntu 12.7-0ubuntu0.20.04.1)
 -- Dumped by pg_dump version 12.7 (Ubuntu 12.7-0ubuntu0.20.04.1)
 
+\c mywallet;
+
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET idle_in_transaction_session_timeout = 0;
